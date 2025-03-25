@@ -109,8 +109,8 @@ def CheckSketch(build_folder):
   return True
 
 def InstallCGAL(build_folder, init=True):
-  helper.Run('sudo apt-get install libcgal-dev')
-  helper.PrintWithGreenColor('Installed libcgal-dev')
+  #helper.Run('sudo apt-get install libcgal-dev')
+  #helper.PrintWithGreenColor('Installed libcgal-dev')
   if init:
     cgal_url = 'https://github.com/CGAL/cgal/releases/download/' \
                'releases%2FCGAL-4.12/CGAL-4.12.zip'
@@ -134,8 +134,9 @@ def InstallEigen(root_folder, init=True):
     helper.Run('wget https://github.com/eigenteam/eigen-git-mirror/archive/3.3.4.zip')
     cpp_lib_folder = os.path.join(root_folder, 'cpp', 'lib')
     helper.Run('unzip 3.3.4.zip -d %s' % os.path.join(cpp_lib_folder))
-    helper.Run('mv %s %s' % (os.path.join(cpp_lib_folder, \
-     'eigen-git-mirror-3.3.4'), os.path.join(cpp_lib_folder, 'eigen-3.3.4')))
+    if not os.path.exists(os.path.join(cpp_lib_folder, 'eigen-3.3.4')):
+      helper.Run('mv %s %s' % (os.path.join(cpp_lib_folder, \
+      'eigen-git-mirror-3.3.4'), os.path.join(cpp_lib_folder, 'eigen-3.3.4')))
     # helper.Run('rm 3.3.4.zip')
     helper.PrintWithGreenColor('Installed Eigen')
 
@@ -232,16 +233,16 @@ def main():
       helper.Run('python3 -m pip install -U scikit-learn')
     
     # Install CGAL.
-    InstallCGAL(build_folder, False)
+    InstallCGAL(build_folder, args.cgal)
     
     # Install Eigen-3.3.4.
-    # InstallEigen(root_folder, args.cgal)
+    InstallEigen(root_folder, args.cgal)
     
     # Compile cpp.
     cpp_build_folder = os.path.join(build_folder, 'cpp')
     if not os.path.exists(cpp_build_folder):
       os.makedirs(cpp_build_folder)
-    if False:
+    if args.cpp:
       os.chdir(cpp_build_folder)
       os.environ['CC'] = '/usr/bin/gcc-9'
       os.environ['CXX'] = '/usr/bin/g++-9'
@@ -270,6 +271,8 @@ def main():
     
     # * Download sketch-backend.
     sketch_folder = os.path.join(build_folder, 'sketch')
+    sketch_backend_folder = os.path.join(sketch_folder, 'sketch-backend')
+
     if not os.path.exists(sketch_folder):
       os.makedirs(sketch_folder)
     if args.sketch:
@@ -282,9 +285,9 @@ def main():
       # Use this version of sketch.
       # helper.Run('hg clone -r 04b3403 sketch-backend-default sketch-backend')
       # https://people.csail.mit.edu/asolar/
-      helper.Run('git clone https://github.com/asolarlez/sketch-backend.git')
+      if not os.path.exists(sketch_backend_folder):
+        helper.Run('git clone https://github.com/asolarlez/sketch-backend.git')
 
-    sketch_backend_folder = os.path.join(sketch_folder, 'sketch-backend')
     env_variables['CSG_SKETCH_BACKEND'] = sketch_backend_folder
 
     # * build sketch backend
@@ -304,13 +307,15 @@ def main():
     
     # Download sketch-frontend.
     os.chdir(sketch_folder)
+    sketch_frontend_folder = os.path.join(sketch_folder, 'sketch-frontend')
+
     if args.sketch:
       # helper.Run('hg clone https://bitbucket.org/gatoatigrado/sketch-frontend')
       # helper.Run('mv sketch-frontend sketch-frontend-default')
       # # Use this version of sketch.
       # helper.Run('hg clone -r 42c057c sketch-frontend-default sketch-frontend')
-      helper.Run('git clone https://github.com/asolarlez/sketch-frontend.git')
-    sketch_frontend_folder = os.path.join(sketch_folder, 'sketch-frontend')
+      if not os.path.exists(sketch_frontend_folder):
+        helper.Run('git clone https://github.com/asolarlez/sketch-frontend.git')
     env_variables['CSG_SKETCH_FRONTEND'] = sketch_frontend_folder
     os.chdir(sketch_frontend_folder)
     if args.sketch:
