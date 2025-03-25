@@ -8,3 +8,4 @@ cpp/lib/eigen*
 .idea/
 
 decomposable/
+.vscode/settings.json
