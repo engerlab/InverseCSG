@@ -22,7 +22,7 @@ def SegmentPointCloud(data_file, seg_num, seg_file_prefix, visualize=False):
   # Clustering.
   cluster_result = cluster.AgglomerativeClustering(n_clusters = seg_num)
   cluster_result.fit(points)
-  labels = cluster_result.labels_.astype(np.int)
+  labels = cluster_result.labels_.astype(int)
   # Display the segmentation results.
   if visualize:
     colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',

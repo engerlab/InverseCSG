@@ -57,12 +57,12 @@ def LoadOffMesh(off_file_name):
   content = [l.strip() for l in content if l.strip() and '#' not in l]
   # First line should be 'OFF'.
   if content[0] != 'OFF':
-    PrintWithRedColor('Incorrect OFF file format. Please fix.')
+    PrintWithRedColor('Incorrect OFF file format. First line should be OFF.')
     sys.exit(-1)
   # Second line should be three numbers.
   numbers = [int(n) for n in content[1].split()]
   if len(numbers) != 3:
-    PrintWithRedColor('Incorrect OFF file format. Please fix.')
+    PrintWithRedColor('Incorrect OFF file format. Second line should be three numbers.')
     sys.exit(-1)
   vertex_number, face_number = numbers[:2]
   if vertex_number <= 0 or face_number <= 0:
