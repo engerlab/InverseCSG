@@ -147,8 +147,7 @@ def CheckPointConstraints(csg_file, pos_points, neg_points):
   # Check positive points first.
   helper.SaveDataFile(tmp_point_file, pos_points)
   helper.Run('%s csg-flag -d %s -e %f -i %s -n %s -p %s' % \
-             (os.environ['CSG_CPP_EXE'], tmp_point_file, 0, csg_file, \
-              tmp_neg_file, tmp_pos_file))
+              tmp_neg_file, tmp_pos_file)
   unsatisfied_pos = helper.LoadDataFile(tmp_neg_file)
   # Check if some points are missing.
   satisfied_pos = helper.LoadDataFile(tmp_pos_file)
@@ -285,11 +284,19 @@ def Preprocessing():
   # Compute the level-set.
   cpp_exe = os.environ['CSG_CPP_EXE']
   level_set_file = os.path.join(point_output_dir, 'levelset.ls')
-  print('Computing the level set...')
-  # Enlarge eps a bit to avoid numerical issues.
-  bigger_eps = eps * 1.1
-  helper.Run('%s level-set -i %s -d %f -o %s' % (cpp_exe, mesh_file_loc, \
-                                                 bigger_eps, level_set_file))
+  #check fi the level set already exists and skip if it does
+  #prompt the user first to make sure
+  if os.path.exists(level_set_file):
+    print('Level set file already exists. Do you want to overwrite it? (y/n)')
+    response = input().strip().lower()
+    if response != 'y':
+      print('Skipping level set computation.')
+  else:
+    print('Computing the level set...')
+    # Enlarge eps a bit to avoid numerical issues.
+    bigger_eps = eps * 1.1
+    helper.Run('%s level-set -v -i %s -d %f -o %s' % (cpp_exe, mesh_file_loc, \
+                                                  bigger_eps, level_set_file))
   mesh_info['level_set_file'] = level_set_file
 
   # Get surface primitives.
