@@ -9,3 +9,5 @@ cpp/lib/eigen*
 
 decomposable/
 .vscode/settings.json
+
+/applicator/*/Applicator_CSG_Trees/**
