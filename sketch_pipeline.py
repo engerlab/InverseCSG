@@ -147,7 +147,8 @@ def CheckPointConstraints(csg_file, pos_points, neg_points):
   # Check positive points first.
   helper.SaveDataFile(tmp_point_file, pos_points)
   helper.Run('%s csg-flag -d %s -e %f -i %s -n %s -p %s' % \
-              tmp_neg_file, tmp_pos_file)
+             (os.environ['CSG_CPP_EXE'], tmp_point_file, 0, csg_file, \
+              tmp_neg_file, tmp_pos_file))
   unsatisfied_pos = helper.LoadDataFile(tmp_neg_file)
   # Check if some points are missing.
   satisfied_pos = helper.LoadDataFile(tmp_pos_file)
