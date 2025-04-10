@@ -1,0 +1,5 @@
+{
+    "RectalIMBT" : ["plastic", "shield", "overmold"],
+    "Generic" : ["Densimet", "Steel", "PMMA_cap", "PMMA_cyl"],
+    "CylinderTest" : ["cyl"] 
+}
